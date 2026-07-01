@@ -1,0 +1,16 @@
+class Solution {
+  public:
+    int maxSumSubarray(vector<int>& arr) {
+        // code here
+        int keep=arr[0];
+        int del=0;
+        int n=arr.size();
+        int ans=arr[0];
+        for(int i=1;i<n;i++){
+            del= max(del+arr[i],keep);
+            keep= max(arr[i],keep+arr[i]);
+            ans= max(ans,max(keep,del));
+        }
+        return ans;
+    }
+};
