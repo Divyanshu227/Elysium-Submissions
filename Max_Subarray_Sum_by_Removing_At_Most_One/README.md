@@ -10,26 +10,33 @@
 ## AI-Generated Explanation
 ### Method Explanation
 
-This problem is a variation of the classic **Kadane's Algorithm** for finding the maximum subarray sum. Here, we are allowed to delete at most one element to maximize the sum of a non-empty subarray.
+This problem is an elegant extension of the classic **Kadane's Algorithm** for finding the maximum subarray sum. By allowing at most one deletion, we introduce a decision point at each element: *Should we keep it, or should we delete it?*
 
-We can solve this efficiently using **Dynamic Programming** with two states:
-1. `keep`: Represents the maximum subarray sum ending at the current index $i$ with **zero** deletions.
-2. `del`: Represents the maximum subarray sum ending at the current index $i$ with **exactly one** deletion.
+We can track this using Dynamic Programming with two state variables at each step `i`:
+
+1. **`keep`**: The maximum subarray sum ending at index `i` with **zero** deletions.
+2. **`del`**: The maximum subarray sum ending at index `i` with **exactly one** deletion.
 
 ### State Transitions
-For each element $arr[i]$ from index $1$ to $n-1$:
-- **`del` transition**:
-  `del = max(del + arr[i], keep)`
-  - `del + arr[i]`: We carry over a previous deletion and must include the current element $arr[i]$.
-  - `keep`: We make our single deletion *right now* at $arr[i]$. This means we take the previous subarray sum ending at $i-1$ without any deletions (`keep`) and skip the current element $arr[i]$.
 
-- **`keep` transition**:
-  `keep = max(arr[i], keep + arr[i])`
-  - This is the standard Kadane's recurrence. We either start a new subarray at $arr[i]$ or extend the existing subarray without deletions.
+For each element `arr[i]` (from `i = 1` to `n - 1`):
 
-- **Global Maximum (`ans`)**:
-  At each step, we update our answer with the maximum of `keep` and `del` to find the overall maximum subarray sum.
+* **`del` state transition:**
+  To end up with exactly one deletion at index `i`, we have two choices:
+  1. Extend a previously deleted state by keeping the current element: `del + arr[i]`.
+  2. Perform the deletion on the current element `arr[i]`, transitioning from the non-deleted subarray prefix: `keep` (equivalent to skipping `arr[i]`).
+  
+  $$\text{del}_{\text{new}} = \max(\text{del}_{\text{old}} + \text{arr}[i], \text{keep}_{\text{old}})$$
+
+* **`keep` state transition:**
+  This is the standard Kadane's recurrence. We either start a new subarray at `arr[i]` or extend the previous non-deleted subarray:
+  
+  $$\text{keep}_{\text{new}} = \max(\text{arr}[i], \text{keep}_{\text{old}} + \text{arr}[i])$$
+
+* **Global Maximum:**
+  At each step, we update our overall answer with the maximum of both states: `ans = max(ans, max(keep, del))`.
 
 ### Complexity Analysis
-- **Time Complexity:** $\mathcal{O}(N)$ as we only iterate through the array of size $N$ once.
-- **Space Complexity:** $\mathcal{O}(1)$ because we only use a few variables (`keep`, `del`, `ans`) to store the states, requiring constant auxiliary space.
+
+- **Time Complexity:** $\mathcal{O}(N)$ because we perform a single linear scan of the array.
+- **Space Complexity:** $\mathcal{O}(1)$ auxiliary space as we only maintain a few state variables (`keep`, `del`, `ans`).
