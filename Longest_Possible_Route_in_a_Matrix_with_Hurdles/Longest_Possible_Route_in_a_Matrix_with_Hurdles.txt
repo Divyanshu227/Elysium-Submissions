@@ -1,0 +1,31 @@
+class Solution {
+  public:
+  int dx[4] ={-1,1,0,0};
+  int dy[4] ={0,0,-1,1};
+  int n,m;
+  int dfs(vector<vector<int>>&mat,vector<vector<bool>>& vis, int xs,int ys,int xd,int yd){
+      if(xs==xd && ys==yd){
+          return 0;
+      }
+      vis[xs][ys]=true;
+      int ans=-1;
+      for(int i=0;i<4;i++ ){
+          int nx = xs+dx[i];
+          int ny =ys+dy[i];
+          if(nx>=0 && nx<n &&ny>=0 &&ny<m&&mat[nx][ny]==1&&!vis[nx][ny]){
+              int cur = dfs(mat, vis, nx, ny, xd, yd);
+                if (cur != -1)
+                    ans = max(ans, cur + 1);
+          }
+      }
+      vis[xs][ys]=false;
+      return ans;
+  }
+    int longestPath(vector<vector<int>>& mat, int xs, int ys, int xd, int yd) {
+        // code here
+        n =mat.size();
+        m=mat[0].size();
+        if(mat[xs][ys]==0 || mat[xd][yd]==0){
+            return -1;
+        }
+        vector<vector<bool>> vis(n,vector<bool>(m,false));
